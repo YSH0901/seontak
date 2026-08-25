@@ -210,4 +210,374 @@ function backToList(){detail.classList.remove('show');subjectLayout.style.displa
 function renderMajors(){side.style.display='none';subjectLayout.style.display='grid';const query=q.value.trim().toLowerCase();const arr=Object.entries(majorData).filter(([k,v])=>!query||[k,v.desc,(v.jobs||[]).join(' '),(v.electives||[]).map(e=>e.subjects).join(' ')].join(' ').toLowerCase().includes(query));count.textContent=arr.length+'개 학과';cards.innerHTML='';if(!arr.length){cards.innerHTML='<div class="empty">검색 결과가 없습니다.<br><span style="font-size:12px">학과명 또는 관련 선택과목을 검색해보세요.</span></div>';return}arr.forEach(([k,v])=>{const c=document.createElement('article');c.className='card clickable-card';c.onclick=()=>openMajor(k);c.innerHTML='<div class="name">'+esc(k)+'</div><div class="meta" style="margin-top:8px;line-height:1.7">'+esc(v.desc)+'</div><div class="actions"><button class="small">학과 상세</button></div>';cards.appendChild(c)})}
 function openMajor(k){const v=majorData[k];if(!v)return;$('dMeta').textContent='학과 정보';$('dTitle').textContent=v.title;$('dLead').textContent=v.desc;$('subjectDetailGrid').style.display='none';$('majorDetailGrid').style.display='grid';$('mElectives').innerHTML='';(v.electives||[]).forEach(e=>{const box=document.createElement('div');box.className='elective-box';box.innerHTML='<span class="elective-badge">'+esc(e.type)+'</span><div class="elective-text">'+esc(e.subjects)+'</div>';$('mElectives').appendChild(box)});$('mJobs').innerHTML='';(v.jobs||[]).forEach(x=>{$('mJobs').innerHTML+='<li>'+esc(x)+'</li>'});$('mBasic').textContent=v.basicSubjects||'정보 없음';$('mAdvanced').textContent=v.advancedSubjects||'정보 없음';$('mCerts').innerHTML='';(v.certs||[]).forEach(x=>{$('mCerts').innerHTML+='<span class="major">'+esc(x)+'</span>'});$('mBooks').innerHTML='';(v.books||[]).forEach(x=>{$('mBooks').innerHTML+='<span class="major">'+esc(x)+'</span>'});$('mUnivs').textContent=v.univs||'정보 없음';$('mTips').innerHTML='';(v.tips||[]).forEach(x=>{$('mTips').innerHTML+='<li>'+esc(x)+'</li>'});subjectLayout.style.display='none';toolbar.style.display='none';autocomplete.classList.remove('show');detail.classList.add('show');scrollTo({top:0,behavior:'smooth'})}
 function renderAutocomplete(){const query=q.value.trim().toLowerCase();autocomplete.innerHTML='';if(!query){autocomplete.classList.remove('show');return}const subjectHits=subjectData.filter(x=>subjectMatches(x,query)).slice(0,6);const majorHits=Object.entries(majorData).filter(([k,v])=>[k,v.desc,(v.jobs||[]).join(' '),(v.electives||[]).map(e=>e.subjects).join(' ')].join(' ').toLowerCase().includes(query)).slice(0,5);if(!subjectHits.length&&!majorHits.length){autocomplete.innerHTML='<div class="ac-item"><span class="ac-name">검색 결과 없음</span></div>';autocomplete.classList.add('show');return}if(subjectHits.length){autocomplete.innerHTML+='<div class="ac-title">선택과목</div>';subjectHits.forEach(x=>{autocomplete.innerHTML+='<div class="ac-item" data-kind="subject" data-name="'+esc(x.name)+'"><span class="ac-name">'+esc(x.name)+'</span><span class="ac-meta">'+esc(x.group)+' · '+esc(normalizeType(x.type))+'</span></div>'})}if(majorHits.length){autocomplete.innerHTML+='<div class="ac-title">학과</div>';majorHits.forEach(([k,v])=>{autocomplete.innerHTML+='<div class="ac-item" data-kind="major" data-name="'+esc(k)+'"><span class="ac-name">'+esc(k)+'</span><span class="ac-meta">학과</span></div>'})}autocomplete.querySelectorAll('.ac-item[data-name]').forEach(el=>el.addEventListener('click',()=>{q.value=el.dataset.name;autocomplete.classList.remove('show');if(el.dataset.kind==='major'){setMode('major');openMajor(el.dataset.name)}else{setMode('subject');openSubject(el.dataset.name)}}));autocomplete.classList.add('show')}
-q.addEventListener('input',()=>{mode==='major'?renderMajors():render();renderAutocomplete()});q.addEventListener('focus',()=>{if(q.value.trim())renderAutocomplete()});q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const first=autocomplete.querySelector('.ac-item[data-name]');if(first)first.click();else{autocomplete.classList.remove('show');mode==='major'?renderMajors():render()}}});document.addEventListener('click',e=>{if(!e.target.closest('.searchWrap'))autocomplete.classList.remove('show')});render();</script></body></html>
+q.addEventListener('input',()=>{mode==='major'?renderMajors():render();renderAutocomplete()});q.addEventListener('focus',()=>{if(q.value.trim())renderAutocomplete()});q.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();const first=autocomplete.querySelector('.ac-item[data-name]');if(first)first.click();else{autocomplete.classList.remove('show');mode==='major'?renderMajors():render()}}});document.addEventListener('click',e=>{if(!e.target.closest('.searchWrap'))autocomplete.classList.remove('show')});render();</script></body></html>,
+"독서 토론과 글쓰기": {
+    "group": "국어",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "공통국어1·2의 듣기·말하기, 읽기, 쓰기 영역을 심화·확장하여 필요한 책을 탐색하고 대화·토의·토론과 글쓰기를 통해 비판적·창의적 사고력과 협력적 의사소통 능력을 기르는 과목이다.",
+    "prereq": "공통국어1·2 이수 후 선택 가능. 일반 선택 독서와 작문을 이수하고 선택하기를 권장.",
+    "depts": "국어국문학과 · 국어교육과 · 초등교육과 · 문예창작과 · 광고홍보학과 · 문헌정보학과",
+    "related": "화법과 언어 · 독서와 작문 · 문학 · 주제 탐구 독서 · 문학과 영상 · 직무 의사소통 · 매체 의사소통 · 언어생활 탐구",
+    "source": "https://hakjum.school/subjects/독서-토론과-글쓰기/",
+    "faq": [
+      "국어 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "공통국어1·2 이수 후 선택할 수 있으며 독서와 작문을 먼저 이수하는 것을 권장합니다.",
+      "석차등급이 산출되어 내신 평균에 반영됩니다."
+    ]
+  },
+  "주제 탐구 독서": {
+    "group": "국어",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "관심 있는 주제와 관련된 다양한 글과 자료를 탐색하고 비판적으로 읽으며 스스로 질문을 만들고 탐구 결과를 표현하는 과정을 통해 독서 역량과 자기주도적 탐구 능력을 기르는 과목이다.",
+    "prereq": "공통국어1·2 이수 후 선택 가능. 독서와 작문을 먼저 이수하는 것을 권장.",
+    "depts": "국어국문학과 · 국어교육과 · 문헌정보학과 · 문예창작과 · 광고홍보학과 · 미디어커뮤니케이션학과",
+    "related": "화법과 언어 · 독서와 작문 · 문학 · 문학과 영상 · 독서 토론과 글쓰기 · 매체 의사소통 · 언어생활 탐구",
+    "source": "https://hakjum.school/subjects/주제-탐구-독서/",
+    "faq": [
+      "국어 교과의 진로선택 과목입니다.",
+      "공통국어1·2 이수 후 선택할 수 있으며 독서와 작문을 먼저 이수하는 것을 권장합니다.",
+      "학점·평가 방식·개설 여부는 학교와 학년도에 따라 달라질 수 있습니다."
+    ]
+  },
+  "고급 미적분": {
+    "group": "수학",
+    "type": "진로선택",
+    "credits": "4±2학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "미적분의 심화된 개념과 추론 방법을 이해하고 탐구하며 자연과학·공학·의학 등 고급 수학이 필요한 분야의 문제를 수학적으로 다룰 수 있는 역량을 기르는 특수목적고 진로선택 과목이다.",
+    "prereq": "공통수학1·2 이수 후 선택 가능. 대수와 미적분Ⅰ을 이수하고 미적분Ⅱ까지 학습한 뒤 심화하는 것을 권장.",
+    "depts": "수학과 · 응용수학과 · 물리학과 · 통계학과 · 자연과학계열 · 공학계열 · 의예과 · 약학과",
+    "related": "대수 · 미적분Ⅰ · 미적분Ⅱ · 기하 · 확률과 통계 · 인공지능 수학 · 수학과제 탐구",
+    "source": "https://hakjum.school/subjects/고급-미적분/",
+    "faq": [
+      "수학 교과의 특수목적고 진로선택 과목으로 기준 4±2학점입니다.",
+      "대수와 미적분Ⅰ을 이수하고 미적분Ⅱ와 연계하여 심화할 수 있습니다.",
+      "학교·학년도에 따라 개설 여부와 평가 방식이 달라질 수 있습니다."
+    ]
+  },
+  "경제 수학": {
+    "group": "수학",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "경제 및 금융의 기본 개념에 수학이 활용되는 사례를 경험하고 경제 현상을 수학적으로 해석하고 탐구하는 과목이다. 함수와 행렬, 미분 등을 활용해 경제지표와 최적의 의사 결정을 이해한다.",
+    "prereq": "공통수학1·2 이수 후 선택 가능. 대수의 수열, 미적분Ⅰ의 미분 단원과 연계하여 학습할 수 있으며 사회 교과 경제와도 연계 가능.",
+    "depts": "경제학과 · 금융회계학과 · 세무학과 · 통계학과 · 정보통계학과 · 응용통계학과 · 사회과학계열전체",
+    "related": "대수 · 미적분Ⅰ · 미적분Ⅱ · 확률과 통계 · 기하 · 인공지능 수학 · 직무 수학 · 수학과 문화 · 실용 통계",
+    "source": "https://hakjum.school/subjects/경제-수학/",
+    "faq": [
+      "수학 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "대수의 수열과 미적분Ⅰ의 미분과 연계하여 학습할 수 있습니다.",
+      "경제와 함께 학습하면 경제 현상을 수학적으로 해석하는 데 도움이 됩니다."
+    ]
+  },
+  "문학과 영상": {
+    "group": "국어",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "공통국어1·2의 문학과 매체 관련 내용을 통합적으로 심화·확장하여 문학 작품과 영상물을 수용·생산하는 능력을 기르고 교육·연구·창작·문화산업 관련 진로에 필요한 문화 역량을 기르는 과목이다.",
+    "prereq": "공통국어1·2 이수 후 선택 가능. 일반 선택 문학을 이수하고 선택하기를 권장.",
+    "depts": "국어국문학과 · 국어교육과 · 문예창작과 · 미디어커뮤니케이션학과 · 문화콘텐츠학과",
+    "related": "화법과 언어 · 독서와 작문 · 문학 · 주제 탐구 독서 · 직무 의사소통 · 독서 토론과 글쓰기 · 매체 의사소통 · 언어생활 탐구",
+    "source": "https://hakjum.school/subjects/문학과-영상/",
+    "faq": [
+      "국어 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "공통국어1·2 이수 후 선택할 수 있으며 문학을 먼저 이수하는 것을 권장합니다.",
+      "문학과 영상 관련 교육·창작·문화산업 진로와 연결됩니다."
+    ]
+  },
+  "매체 의사소통": {
+    "group": "국어",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "디지털 매체가 개인과 사회의 의사소통 문화에 미치는 영향을 탐구하고 실제 삶에서 매체를 통해 의사소통하는 과정의 현상과 문제점을 비판적으로 탐구하여 바람직한 의사소통 문화를 형성하는 과목이다.",
+    "prereq": "공통국어1·2 이수 후 선택 가능.",
+    "depts": "국어교육과 · 초등교육과 · 미디어커뮤니케이션학과 · 광고홍보학과",
+    "related": "화법과 언어 · 독서와 작문 · 문학 · 주제 탐구 독서 · 문학과 영상 · 직무 의사소통 · 독서 토론과 글쓰기 · 언어생활 탐구",
+    "source": "https://hakjum.school/subjects/매체-의사소통/",
+    "faq": [
+      "국어 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "공통국어1·2 이수 후 선택할 수 있습니다.",
+      "성취도(A~E)와 함께 5등급 상대평가 석차등급이 산출될 수 있습니다."
+    ]
+  },
+  "실용 통계": {
+    "group": "수학",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "통계적 문제해결 과정을 이해하고 통계적 탐구 활동을 통해 실생활 문제를 해결하는 과목이다. 정보화 사회에서 생산되는 자료를 활용하여 현대 사회의 다양한 문제를 해결하는 데 도움을 준다.",
+    "prereq": "공통수학1·2 이수 후 선택 가능. 일반 선택 확률과 통계를 이수한 후 심화하여 학습할 수 있음.",
+    "depts": "통계학과 · 응용통계학과 · 데이터과학과 · 경제학과 · 사회학과 · 제약학과 · 보건학과 · 생명과학과",
+    "related": "대수 · 미적분Ⅰ · 확률과 통계 · 기하 · 미적분Ⅱ · 경제 수학 · 인공지능 수학 · 수학과 문화 · 수학과제 탐구",
+    "source": "https://hakjum.school/subjects/실용-통계/",
+    "faq": [
+      "수학 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "확률과 통계를 이수한 후 심화하여 학습할 수 있습니다.",
+      "통계학·데이터·경제·사회·생명 분야와 연결됩니다."
+    ]
+  },
+  "수학과 문화": {
+    "group": "수학",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "문화와 수학 사이의 융합 현상을 탐구하여 인간 활동으로서 수학의 역할을 이해하고 문화 발달에서 수학의 유용성과 가치를 음미하는 과목이다.",
+    "prereq": "공통수학1·2 이수 후 선택 가능.",
+    "depts": "수학과 · 사회학과 · 환경학과 · 생명공학과 · 스포츠과학과 · 대기과학과 · 언론정보학과",
+    "related": "대수 · 미적분Ⅰ · 확률과 통계 · 기하 · 미적분Ⅱ · 경제 수학 · 인공지능 수학 · 실용 통계 · 수학과제 탐구",
+    "source": "https://hakjum.school/subjects/수학과-문화/",
+    "faq": [
+      "수학 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "공통수학1·2 이수 후 선택할 수 있습니다.",
+      "수학과 다른 학문·문화 영역의 연결성을 탐구합니다."
+    ]
+  },
+  "심화 영어": {
+    "group": "영어",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "영어Ⅰ·Ⅱ와 연계된 심화 과목으로 일상생활에 필요한 의사소통 능력을 심화하고 기초 학문 분야를 포함한 다양한 주제의 영어 이해와 표현 능력을 기르는 과목이다.",
+    "prereq": "일반 선택 영어Ⅰ·영어Ⅱ를 이수한 후 선택할 것을 권장.",
+    "depts": "영문학과 · 영어통번역과 · 영어교육과 · 인문계열 · 상경계열 · 공학계열 · 자연계열 · 의약학계열",
+    "related": "영어Ⅰ · 영어Ⅱ · 영어 독해와 작문 · 영미 문학 읽기 · 영어 발표와 토론 · 심화 영어 독해와 작문 · 직무 영어 · 실생활 영어 회화 · 미디어 영어 · 세계 문화와 영어 · 심화 영어 회화Ⅰ · 심화 영어 회화Ⅱ",
+    "source": "https://hakjum.school/subjects/심화-영어/",
+    "faq": [
+      "영어 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "영어Ⅰ·영어Ⅱ를 이수한 후 선택할 것을 권장합니다.",
+      "인문·상경·공학·자연·의약학 등 폭넓은 계열과 연결됩니다."
+    ]
+  },
+  "도시의 미래 탐구": {
+    "group": "사회",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "도시에 대한 지리적 이해를 바탕으로 세계 여러 도시의 역동적인 변화를 탐색하고 도시 문제에 대한 사회과학적 분석과 인문학적 성찰을 통해 더 나은 도시의 미래를 만들어 가기 위한 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능하며 세계시민과 지리를 먼저 이수할 것을 권장. 한국지리 탐구·여행지리·기후변화와 지속가능한 세계와 연계 가능.",
+    "depts": "건축학과 · 교통공학과 · 도시계획과 · 도시공학과 · 도시사회학과 · 도시행정학과 · 부동산학과 · 신문방송학과 · 조경도시개발학과 · 지리교육학과 · 환경학과",
+    "related": "세계시민과 지리 · 세계사 · 사회와 문화 · 한국지리 탐구 · 동아시아 역사 기행 · 정치 · 법과 사회 · 경제 · 국제 관계의 이해",
+    "source": "https://hakjum.school/subjects/도시의-미래-탐구/",
+    "faq": [
+      "사회 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "세계시민과 지리를 먼저 이수할 것을 권장합니다.",
+      "도시계획·건축·교통·환경·부동산 등 도시 관련 진로와 연결됩니다."
+    ]
+  },
+  "인문학과 윤리": {
+    "group": "사회",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "고전에 대한 탐구와 성찰을 통해 인문학적 소양과 바람직한 인성 및 포용성과 시민성을 기르는 도덕·윤리 영역의 진로선택 과목이다. 자유·평등·책임·정의와 인간관계에 필요한 가치 등을 탐구한다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 현대사회와 윤리를 먼저 이수한 후 윤리와 사상·인문학과 윤리·윤리 문제 탐구로 이어가는 것을 권장.",
+    "depts": "기독교철학과 · 동양학과 · 문화인류학과 · 사회학과 · 상담심리학과 · 윤리교육과 · 정치외교학과 · 종교학과 · 철학과 · 철학생명의료윤리학과",
+    "related": "세계시민과 지리 · 세계사 · 사회와 문화 · 현대사회와 윤리 · 한국지리 탐구 · 도시의 미래 탐구 · 동아시아 역사 기행 · 정치 · 법과 사회 · 경제 · 윤리와 사상 · 국제 관계의 이해",
+    "source": "https://hakjum.school/subjects/인문학과-윤리/",
+    "faq": [
+      "사회 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "현대사회와 윤리를 먼저 이수한 후 선택하는 것을 권장합니다.",
+      "철학·윤리·문화·사회·정치 관련 진로와 연결됩니다."
+    ]
+  },
+  "데이터 과학": {
+    "group": "정보",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "컴퓨팅 사고력을 기반으로 디지털 사회에서 데이터의 역할과 잠재적 가치를 이해하고 데이터 과학에 기반한 문제 해결 과정과 합리적 의사 결정에 필요한 통찰 역량을 기르는 과목이다.",
+    "prereq": "과목 간 위계성이 없어 자유롭게 편성 가능하며 일반선택 정보 이수 후 수강을 권장.",
+    "depts": "컴퓨터공학과 · 컴퓨터과학과 · 소프트웨어학과 · 인공지능학과 · 데이터과학과 · 전기·정보학과 · 빅데이터분석과 · 정보보호과 · 뇌인지과학융합과",
+    "related": "정보 · 인공지능 기초 · 소프트웨어와 생활 · 정보과학",
+    "source": "https://hakjum.school/subjects/데이터-과학/",
+    "faq": [
+      "정보 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "과목 간 위계성이 없어 자유롭게 편성 가능하며 정보 이수를 권장합니다.",
+      "데이터·AI·컴퓨터 관련 학과와 연결됩니다."
+    ]
+  },
+  "국제 관계의 이해": {
+    "group": "사회",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "국제 사회가 직면한 중요한 이슈와 국제 사회 행위 주체들의 복합적인 관계를 이해하고 세계시민으로서 보편적이고 타당한 의사 결정을 할 수 있는 역량을 기르는 일반사회 영역의 진로선택 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 정치·법과 사회·세계사·한국지리 탐구와 내용이 연계된다.",
+    "depts": "국제관계학과 · 국제문화정보학과 · 국제법무학과 · 국제통상학과 · 국제학부 · 법학과 · 사회교육과 · 사회복지학과 · 정치외교학과 · 통일외교안보학과",
+    "related": "세계시민과 지리 · 세계사 · 사회와 문화 · 한국지리 탐구 · 도시의 미래 탐구 · 동아시아 역사 기행 · 정치 · 법과 사회 · 경제 · 윤리와 사상 · 인문학과 윤리",
+    "source": "https://hakjum.school/subjects/국제-관계의-이해/",
+    "faq": [
+      "사회 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "통합사회1·2 이수 후 선택할 수 있습니다.",
+      "정치·법과 사회·세계사·한국지리 탐구와 연계됩니다."
+    ]
+  },
+  "동아시아 역사 기행": {
+    "group": "사회",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "동아시아의 생태환경과 인간 활동, 유·무형 문화유산을 학습하고 동북아시아와 동남아시아 지역에서 전개된 교류·갈등·침략·저항·공존과 평화를 주제로 탐구·토론하는 역사 영역의 진로선택 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 한국사1·2와 순차 또는 병행 이수 가능하며 세계사를 먼저 이수하는 것을 권장.",
+    "depts": "고고미술사학과 · 고고학과 · 국제학부·국제관계학과 · 군사학과 · 동양사학과 · 사회학과 · 신문방송학과 · 역사교육과 · 역사학부·사학과 · 일어일문학과 · 정치외교학과 · 중어중문학과",
+    "related": "세계시민과 지리 · 세계사 · 사회와 문화 · 현대사회와 윤리 · 한국지리 탐구 · 도시의 미래 탐구 · 정치 · 법과 사회 · 경제 · 윤리와 사상 · 인문학과 윤리 · 국제 관계의 이해",
+    "source": "https://hakjum.school/subjects/동아시아-역사-기행/",
+    "faq": [
+      "사회 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "세계사를 이수하고 선택하는 것을 권장합니다.",
+      "역사·국제관계·정치외교·동아시아 관련 학과와 연결됩니다."
+    ]
+  },
+  "행성우주과학": {
+    "group": "과학",
+    "type": "진로선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "행성 지구를 비롯한 천체 및 우주과학 관련 기본 개념을 이해하고 지구과학 탐구 능력과 태도를 길러 지구 행성계와 천체·우주 관련 현상을 과학적으로 이해하는 과목이다.",
+    "prereq": "일반 선택 지구과학 이수 후 선택할 것을 권장. 지구시스템과학·기후변화와 환경생태·융합과학 탐구와 연계 가능.",
+    "depts": "지구과학교육과 · 과학교육학부 · 천문학과 · 우주항공공학과 · 천체물리학과 · 물리학과",
+    "related": "물리학 · 화학 · 생명과학 · 지구과학 · 역학과 에너지 · 전자기와 양자 · 물질과 에너지 · 화학 반응의 세계 · 세포와 물질대사 · 생물의 유전 · 지구시스템과학 · 과학의 역사와 문화",
+    "source": "https://hakjum.school/subjects/행성우주과학/",
+    "faq": [
+      "과학 교과의 진로선택 과목으로 기준 4±1학점입니다.",
+      "지구과학을 이수한 후 선택할 것을 권장합니다.",
+      "천문·우주항공·물리·지구과학 관련 진로와 연결됩니다."
+    ]
+  },
+  "사회문제 탐구": {
+    "group": "사회",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "석차등급 없이 성취도(A~E) 중심",
+    "desc": "사회문제의 의미와 특징, 사회문제에 대한 연구 방법을 이해하고 일상생활에서 접하는 다양한 사회문제의 해결 방안을 학생이 주도적으로 탐구하며 결과를 보고서로 작성하는 실천적 탐구 활동을 제시하는 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 사회와 문화를 먼저 이수한 후 정치·법과 사회·경제·국제 관계의 이해·금융과 경제생활 등으로 연계하는 것을 권장.",
+    "depts": "경영학과 · 경제학과 · 교육학과 · 문화인류학과 · 미디어학과 · 사회교육과 · 사회복지학과 · 사회학과 · 신문방송학과 · 정치외교학과 · 지역개발학과 · 통계학과 · 행정학과",
+    "related": "세계시민과 지리 · 세계사 · 사회와 문화 · 현대사회와 윤리 · 한국지리 탐구 · 도시의 미래 탐구 · 동아시아 역사 기행 · 정치 · 법과 사회 · 경제 · 국제 관계의 이해 · 인문학과 윤리 · 금융과 경제생활",
+    "source": "https://hakjum.school/subjects/사회문제-탐구/",
+    "faq": [
+      "사회 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "석차등급 없이 성취도(A~E) 중심으로 평가되는 과목입니다.",
+      "사회와 문화를 먼저 이수한 후 여러 사회 탐구 과목과 연계하는 것을 권장합니다."
+    ]
+  },
+  "윤리문제 탐구": {
+    "group": "사회",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E) 중심",
+    "desc": "미래 사회로의 변화 과정에서 경험하는 다양한 문제를 윤리적 관점에서 바라보고 합리적 해결 방안을 모색하여 윤리적 탐구와 성찰 능력 및 윤리적 실천 역량을 기르는 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 현대사회와 윤리를 먼저 이수한 후 윤리와 사상·인문학과 윤리와 연계하는 것을 권장.",
+    "depts": "윤리교육과 · 철학과 · 철학생명의료윤리학과 · 사회학과 · 상담심리학과 · 문화인류학과 · 정치외교학과 · 종교학과",
+    "related": "세계시민과 지리 · 세계사 · 사회와 문화 · 현대사회와 윤리 · 도시의 미래 탐구 · 정치 · 법과 사회 · 경제 · 윤리와 사상 · 인문학과 윤리 · 국제 관계의 이해",
+    "source": "https://hakjum.school/subjects/윤리문제-탐구/",
+    "faq": [
+      "사회 교과의 융합선택 과목입니다.",
+      "현대사회와 윤리를 먼저 이수한 후 선택하는 것을 권장합니다.",
+      "윤리적 탐구·성찰과 실천 역량을 중심으로 학습합니다."
+    ]
+  },
+  "역사로 탐구하는 현대 세계": {
+    "group": "사회",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E) 중심",
+    "desc": "세계사 학습을 바탕으로 현대 세계의 변화와 주요 문제를 역사적 관점에서 탐구하고 자료를 비판적으로 분석하여 현대 사회를 이해하고 미래를 전망하는 역사 영역의 융합선택 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 세계사를 이수하고 선택하는 것을 권장하며 동아시아 역사 기행과 연계할 수 있음.",
+    "depts": "역사학과 · 역사교육과 · 국제관계학과 · 정치외교학과 · 사회학과 · 국제학부 · 인류학과 · 언론·미디어 관련 학과",
+    "related": "세계사 · 동아시아 역사 기행 · 세계시민과 지리 · 사회와 문화 · 정치 · 국제 관계의 이해",
+    "source": "https://hakjum.school/subjects/역사로-탐구하는-현대-세계/",
+    "faq": [
+      "사회 교과의 융합선택 과목입니다.",
+      "세계사를 이수하고 선택하는 것을 권장합니다.",
+      "현대 세계의 변화와 문제를 역사적 관점에서 탐구합니다."
+    ]
+  },
+  "금융과 경제생활": {
+    "group": "사회",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "성취도(A~E) 중심",
+    "desc": "급변하는 디지털 금융 환경에서 평생에 걸쳐 안정된 금융 복지를 향유하는 데 필요한 금융 지식과 금융 의사 결정 능력, 건전한 재무적 태도와 습관을 기르는 과목이다.",
+    "prereq": "통합사회1·2 이수 후 선택 가능. 경제·사회문제 탐구·경제 수학과 연계 가능.",
+    "depts": "경제학과 · 경영학과 · 금융학과 · 회계학과 · 세무학과 · 소비자학과 · 경제금융학과 · 금융회계학과",
+    "related": "경제 · 경제 수학 · 사회와 문화 · 사회문제 탐구 · 실용 통계 · 확률과 통계",
+    "source": "https://hakjum.school/subjects/금융과-경제생활/",
+    "faq": [
+      "미래 경제생활의 주체로서 필요한 금융 지식과 의사 결정 능력을 다룹니다.",
+      "경제·경제 수학과 연계해 학습할 수 있습니다.",
+      "학교·학년도에 따라 학점·평가 방식이 달라질 수 있습니다."
+    ]
+  },
+  "과학의 역사와 문화": {
+    "group": "과학",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "석차등급 없이 성취도(A~E) 중심",
+    "desc": "인류 문명의 역사 속 과학의 특징과 가치를 이해하고 과학의 사회적 역할을 고려하여 미래 사회에 필요한 과학적 소양을 함양하는 과목이다. 과학과 사회·경제·문화의 상호작용과 과학기술 발전에 따른 변화를 탐색한다.",
+    "prereq": "통합과학1·2와 과학탐구실험1·2를 이수한 후 선택 가능. 과학 교과의 일반선택 및 진로선택 과목과 연계 가능.",
+    "depts": "과학교육과 · 철학과 · 역사학 · 문화학 · 사회과학계열",
+    "related": "물리학 · 화학 · 생명과학 · 지구과학 · 역학과 에너지 · 전자기와 양자 · 물질과 에너지 · 화학 반응의 세계 · 세포와 물질대사 · 생물의 유전 · 지구시스템과학 · 행성우주과학",
+    "source": "https://hakjum.school/subjects/과학의-역사와-문화/",
+    "faq": [
+      "과학 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "석차등급 없이 성취도(A~E) 중심으로 평가됩니다.",
+      "통합과학1·2와 과학탐구실험1·2 이수 후 선택할 수 있습니다."
+    ]
+  },
+  "기후변화와 환경생태": {
+    "group": "과학",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "석차등급 없이 성취도(A~E) 중심",
+    "desc": "기후변화와 환경생태계의 변화 원인을 과학적으로 이해하고 인간 활동과 자연환경의 상호작용을 탐구하여 지속가능한 미래를 위한 문제 해결 능력과 실천 역량을 기르는 과목이다.",
+    "prereq": "통합과학1·2와 과학탐구실험1·2 이수 후 선택 가능. 지구과학·생명과학·물질과 에너지·지구시스템과학·행성우주과학·융합과학 탐구와 연계 가능.",
+    "depts": "환경공학과 · 환경학과 · 환경생태학과 · 지구환경과학과 · 생명환경학과 · 산림환경과학과 · 도시공학과 · 기후과학과",
+    "related": "생명과학 · 지구과학 · 물질과 에너지 · 지구시스템과학 · 행성우주과학 · 과학의 역사와 문화 · 융합과학 탐구",
+    "source": "https://hakjum.school/subjects/기후변화와-환경생태/",
+    "faq": [
+      "과학 교과의 융합선택 과목입니다.",
+      "기후변화·환경·생태 문제를 과학적으로 탐구합니다.",
+      "지구과학·생명과학과 연계하여 학습할 수 있습니다."
+    ]
+  },
+  "융합과학 탐구": {
+    "group": "과학",
+    "type": "융합선택",
+    "credits": "4±1학점",
+    "assessment": "석차등급 없이 성취도(A~E) 중심",
+    "desc": "빅데이터, 인공지능, 모의실험 등을 이용한 탐구 활동을 통해 융합과학의 역할과 필요성을 이해하고 융합적 사고 능력과 탐구 능력을 함양하는 과목이다.",
+    "prereq": "통합과학1·2와 과학탐구실험1·2를 이수한 후 선택 가능. 과학 교과의 일반선택 및 진로선택 과목과 연계 가능.",
+    "depts": "자연과학계열 · 공학계열 · 생명공학계열 · 환경계열 · 컴퓨터·AI계열 · 융합학부",
+    "related": "물리학 · 화학 · 생명과학 · 지구과학 · 역학과 에너지 · 전자기와 양자 · 물질과 에너지 · 화학 반응의 세계 · 세포와 물질대사 · 생물의 유전 · 지구시스템과학 · 행성우주과학 · 과학의 역사와 문화 · 기후변화와 환경생태",
+    "source": "https://hakjum.school/subjects/융합과학-탐구/",
+    "faq": [
+      "과학 교과의 융합선택 과목으로 기준 4±1학점입니다.",
+      "석차등급 없이 성취도(A~E) 중심으로 평가됩니다.",
+      "통합과학1·2와 과학탐구실험1·2 이수 후 선택할 수 있습니다."
+    ]
+  },
+  "정보과학": {
+    "group": "정보",
+    "type": "진로선택",
+    "credits": "4±2학점",
+    "assessment": "성취도(A~E)+5등급 상대평가",
+    "desc": "컴퓨터과학의 원리와 알고리즘, 자료구조, 계산적 사고 등을 심화하여 다양한 문제를 컴퓨터로 해결하는 능력을 기르고 정보과학 관련 전공의 기초를 다루는 과목이다.",
+    "prereq": "정보 이수 후 선택을 권장하며 인공지능 기초·데이터 과학·소프트웨어와 생활과 연계 가능.",
+    "depts": "컴퓨터공학과 · 컴퓨터과학과 · 소프트웨어학과 · 인공지능학과 · 데이터과학과 · 정보보호과 · 전기·정보학과",
+    "related": "정보 · 인공지능 기초 · 데이터 과학 · 소프트웨어와 생활",
+    "source": "https://hakjum.school/subjects/정보과학/",
+    "faq": [
+      "정보 교과의 진로선택 과목입니다.",
+      "정보 이수 후 선택하는 것을 권장합니다.",
+      "컴퓨터과학·알고리즘·AI·데이터 관련 진로와 연결됩니다."
+    ]
+  }
+}"언어생활 탐구":{"group":"국어","type":"융합선택","credits":"4±1학점","assessment":"성취도(A~E)+5등급 상대평가","desc":"공통국어1·2의 문법 영역을 중심으로 듣기·말하기·쓰기·매체 영역을 심화·확장하여 일상의 언어생활에서 다양한 주제를 발견하고 탐구하며 비판적·창의적 사고력과 능동적인 언어 주체로서의 언어문화 실천 역량을 기르는 과목이다.","prereq":"공통국어1·2 이수 후 선택 가능. 일반 선택 화법과 언어를 이수하고 선택하기를 권장.","depts":"국어국문학과 · 국어교육과 · 언어학과 · 미디어커뮤니케이션학과 · 광고홍보학과 · 통번역학과","related":"화법과 언어 · 독서와 작문 · 문학 · 주제 탐구 독서 · 문학과 영상 · 직무 의사소통 · 독서 토론과 글쓰기 · 매체 의사소통","source":"https://hakjum.school/subjects/언어생활-탐구/","faq":["국어 교과의 융합선택 과목으로 기준 4±1학점입니다.","공통국어1·2 이수 후 선택할 수 있으며 화법과 언어를 먼저 이수하는 것을 권장합니다.","언어·미디어·광고·통번역 관련 학과와 연결됩니다."]},
+"기후 변화와 지속가능한 세계":{"group":"사회","type":"융합선택","credits":"4±1학점","assessment":"성취도(A~E) 중심","desc":"세계 여러 지역에서 발생하는 기후변화와 지속가능성 문제를 지리적 관점에서 탐구하고 인간과 자연환경의 상호작용을 이해하여 지속가능한 미래를 위한 시민적 실천 역량을 기르는 과목이다.","prereq":"통합사회1·2 이수 후 선택 가능. 세계시민과 지리·한국지리 탐구·도시의 미래 탐구와 연계하여 학습할 수 있음.","depts":"지리학과 · 지리교육과 · 환경공학과 · 환경학과 · 도시공학과 · 도시계획학과 · 기후환경학과 · 생태환경학과","related":"세계시민과 지리 · 한국지리 탐구 · 도시의 미래 탐구 · 여행지리 · 기후변화와 환경생태 · 지구시스템과학 · 행성우주과학 · 융합과학 탐구","source":"https://hakjum.school/subjects/기후변화와-지속가능한-세계/","faq":["사회 교과의 융합선택 과목입니다.","세계시민과 지리·한국지리 탐구·도시의 미래 탐구와 연계할 수 있습니다.","기후변화와 지속가능한 미래를 지리적 관점에서 탐구합니다."]},
